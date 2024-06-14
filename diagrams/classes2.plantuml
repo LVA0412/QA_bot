@@ -1,0 +1,94 @@
+@startuml
+top to bottom direction
+
+set namespaceSeparator none
+
+class "AdminBaseHandler" as QABot.base_handler.AdminBaseHandler {
+  check_and_switch_by_command() -> typing.Optional[telebot.types.Message]
+}
+class "BaseMessageHandler" as QABot.base_handler.BaseMessageHandler {
+  BUTTONS : typing.List[typing.List[str]]
+  CONTENT_TYPES : list
+  DEFAULT_MESSAGE : NoneType
+  DO_DEFAULT_COMMANDS : bool
+  MAX_MESSAGE_LENGTH : int
+  PARSE_MODE : NoneType
+  STATE : Optional[typing.Optional[telebot_backends.State]]
+  STATE_BY_MESSAGE : dict
+  bot : TeleBot
+  conn
+  handler_by_state : NoneType
+  message : Optional[typing.Optional[telebot.types.Message]]
+  qa_manager
+  user_info : NoneType
+  validation
+  check_and_switch_by_command() -> typing.Optional[telebot.types.Message]
+  connect(user_id: str)
+  get_default_message()
+  get_new_user_answers()
+  get_operators() -> typing.List[int]
+  get_question_answers()
+  get_question_by_id(id: str) -> str
+  get_user_cache() -> typing.Optional[str]
+  get_user_question_by_id(question_id: str)
+  handle_message(message: telebot.types.Message) -> telebot.types.Message
+  handle_message_middleware(message: telebot.types.Message)
+  make_buttons_list() -> typing.List[typing.List[str]]
+  make_markup(buttons_list) -> telebot.types.ReplyKeyboardMarkup
+  process_state_by_message(unknown_pass_enabled) -> typing.Optional[telebot.types.Message]
+  quit(user_id: str)
+  save_question_answer(id: typing.Optional[str], question: str, text_answer: typing.Optional[str], file_answer: typing.Optional[str], ml_data: bytes)
+  send_message(message: str, reply_markup, parse_mode) -> telebot.types.Message
+  send_photo(photo_path: str) -> telebot.types.Message
+  set_handler_by_state(handler_by_state)
+  set_user_cache(data: str)
+  switch_on_me(bot_message: str, markup: telebot.types.ReplyKeyboardMarkup, parse_mode: typing.Optional[str]) -> telebot.types.Message
+  switch_to_state(state: telebot_backends.State, message: typing.Optional[str], markup: telebot.types.ReplyKeyboardMarkup, parse_mode: typing.Optional[str]) -> telebot.types.Message
+  try_again(message: typing.Optional[str], parse_mode: typing.Optional[str], markup: telebot.types.ReplyKeyboardMarkup) -> telebot.types.Message
+  upsert_answer(id: str, question: typing.Optional[str], prev_question: typing.Optional[str], answer: typing.Optional[str], extra_info: typing.Optional[str])
+  validate_message(message: telebot.types.Message) -> typing.Optional[telebot.types.Message]
+}
+class "QaBaseHandler" as QABot.base_handler.QaBaseHandler {
+  check_and_switch_by_command() -> typing.Optional[telebot.types.Message]
+}
+class "MessageValidation" as QABot.base_handler.BaseMessageHandler.MessageValidation {
+  empty_message_enabled : bool
+  max_length : Optional[typing.Optional[int]]
+  prohibited_symbols : Optional[typing.Optional[typing.Set[str]]]
+}
+QABot.base_handler.AdminBaseHandler --|> QABot.base_handler.BaseMessageHandler
+QABot.base_handler.QaBaseHandler --|> QABot.base_handler.BaseMessageHandler
+QABot.base_handler.BaseMessageHandler.MessageValidation --* QABot.base_handler.BaseMessageHandler : validation
+
+class "ChooseQuestion" as QABot.qa_bot.main.ChooseQuestion {
+  STATE
+  handle_message(message: telebot.types.Message) -> telebot.types.Message
+}
+class "CollectContactInfo" as QABot.qa_bot.main.CollectContactInfo {
+  DEFAULT_MESSAGE
+  STATE
+  handle_message(message: telebot.types.Message) -> telebot.types.Message
+}
+class "MainStateHandler" as QABot.admin_bot.main.MainStateHandler {
+  CONTENT_TYPES : list
+  DEFAULT_MESSAGE
+  DO_DEFAULT_COMMANDS : bool
+  STATE
+  handle_message(message: telebot.types.Message) -> telebot.types.Message
+}
+class "MainStateHandler" as QABot.qa_bot.main.MainStateHandler {
+  DEFAULT_MESSAGE
+  STATE
+  handle_message(message: telebot.types.Message) -> telebot.types.Message
+}
+class "RewriteQuestion" as QABot.qa_bot.main.RewriteQuestion {
+  DEFAULT_MESSAGE
+  STATE
+  handle_message(message: telebot.types.Message) -> telebot.types.Message
+}
+QABot.qa_bot.main.ChooseQuestion --|> QABot.base_handler.QaBaseHandler
+QABot.qa_bot.main.RewriteQuestion --|> QABot.base_handler.QaBaseHandler
+QABot.qa_bot.main.MainStateHandler --|> QABot.base_handler.QaBaseHandler
+QABot.qa_bot.main.CollectContactInfo --|> QABot.base_handler.QaBaseHandler
+QABot.admin_bot.main.MainStateHandler --|> QABot.base_handler.AdminBaseHandler
+@enduml

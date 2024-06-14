@@ -1,0 +1,57 @@
+@startuml
+hide methods
+hide stereotypes
+
+' Define the ENUM type
+enum QUESTION_STATUS {
+  created
+  accepted
+  processed
+  rejected
+}
+
+' Define the question_answers table
+entity "question_answers" as question_answers {
+  + id : UUID {pk}
+  --
+  question : TEXT
+  text_answer : TEXT
+  answer_file_path : TEXT
+  ml_data : BYTEA
+}
+
+' Define the user_questions table
+entity "user_questions" as user_questions {
+  + id : UUID {pk}
+  --
+  question : TEXT
+  previous_question : TEXT
+  created : TIMESTAMP
+  found_answer_id : UUID
+  extra_info : TEXT
+  question_status : QUESTION_STATUS
+}
+
+' Define the users_cache table
+entity "users_cache" as users_cache {
+  + user_id : TEXT {pk}
+  --
+  data : TEXT
+}
+
+' Define the operators table
+entity "operators" as operators {
+  + user_id : TEXT {pk}
+}
+
+' Define relationships
+question_answers ||--o{ user_questions : "found_answer_id"
+user_questions : found_answer <<ForeignKey >>
+
+note bottom of user_questions
+  found_answer_id references question_answers (id)
+end note
+
+' Add database notes
+note "Postgres Database ER Diagram" as N1
+@enduml

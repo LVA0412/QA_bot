@@ -1,0 +1,28 @@
+@startuml
+top to bottom direction
+
+set namespaceSeparator none
+class "AdminHandlersController" as QABot.controller.AdminHandlersController {
+  TOKEN_PATH : str
+  init_commands()
+}
+class "BaseHandlersController" as QABot.controller.BaseHandlersController {
+  TOKEN_PATH : str
+  bot : TeleBot
+  conn
+  handler_by_state : dict
+  qa_manager
+  sentence_transformer : SentenceTransformer
+  init_commands()
+  init_handlers()
+  run()
+  switch_to_state(state: telebot_backends.State, message: telebot.types.Message, bot_message: typing.Optional[str]) -> telebot.types.Message
+}
+class "QaHandlersController" as QABot.controller.QaHandlersController {
+  TOKEN_PATH : str
+  init_commands()
+}
+QABot.controller.AdminHandlersController --|> QABot.controller.BaseHandlersController
+QABot.controller.QaHandlersController --|> QABot.controller.BaseHandlersController
+
+@enduml

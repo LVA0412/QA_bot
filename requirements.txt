@@ -1,0 +1,8 @@
+PyTelegramBotAPI
+requests
+sentence-transformers
+scipy
+numpy
+psycopg2-binary
+pandas
+openpyxl

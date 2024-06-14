@@ -1,0 +1,54 @@
+@startuml packages
+set namespaceSeparator none
+package "QABot" as QABot {
+}
+package "QABot.admin_bot" as QABot.admin_bot {
+}
+package "QABot.admin_bot.main" as QABot.admin_bot.main {
+}
+package "QABot.admin_bot.messages" as QABot.admin_bot.messages {
+}
+package "QABot.admin_bot.states" as QABot.admin_bot.states {
+}
+package "QABot.admin_bot.xlsx_util" as QABot.admin_bot.xlsx_util {
+}
+package "QABot.base_handler" as QABot.base_handler {
+}
+package "QABot.controller" as QABot.controller {
+}
+package "QABot.messages" as QABot.messages {
+}
+package "QABot.qa_bot" as QABot.qa_bot {
+}
+package "QABot.qa_bot.main" as QABot.qa_bot.main {
+}
+package "QABot.qa_bot.messages" as QABot.qa_bot.messages {
+}
+package "QABot.qa_bot.states" as QABot.qa_bot.states {
+}
+package "QABot.question_answers" as QABot.question_answers {
+}
+QABot.admin_bot.main --> QABot.admin_bot.states
+QABot.admin_bot.main --> QABot.admin_bot.xlsx_util
+QABot.base_handler --> QABot.admin_bot
+QABot.base_handler --> QABot.admin_bot.messages
+QABot.base_handler --> QABot.admin_bot.states
+QABot.base_handler --> QABot.messages
+QABot.base_handler --> QABot.qa_bot
+QABot.base_handler --> QABot.qa_bot.messages
+QABot.base_handler --> QABot.qa_bot.states
+QABot.base_handler --> QABot.question_answers
+QABot.controller --> QABot.admin_bot
+QABot.controller --> QABot.admin_bot.messages
+QABot.controller --> QABot.admin_bot.states
+QABot.controller --> QABot.base_handler
+QABot.controller --> QABot.messages
+QABot.controller --> QABot.qa_bot
+QABot.controller --> QABot.qa_bot.messages
+QABot.controller --> QABot.qa_bot.states
+QABot.controller --> QABot.question_answers
+QABot.qa_bot.main --> QABot.qa_bot.states
+QABot.qa_bot.main --> QABot.qa_bot.states
+QABot.question_answers --> QABot.qa_bot
+QABot.question_answers --> QABot.qa_bot.messages
+@enduml

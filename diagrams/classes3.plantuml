@@ -1,0 +1,51 @@
+@startuml
+top to bottom direction
+
+set namespaceSeparator none
+
+class "BotStates" as QABot.admin_bot.states.BotStates {
+  main : State
+}
+class "BotStates" as QABot.qa_bot.states.BotStates {
+  choose_question : State
+  collect_contact_info : State
+  main : State
+  rewrite_question : State
+}
+
+
+class "NewUserQuestion" as QABot.admin_bot.xlsx_util.NewUserQuestion {
+  created : datetime
+  extra_info : typing.Optional[str]
+  previous_question : typing.Optional[str]
+  question : str
+}
+class "QAManager" as QABot.question_answers.QAManager {
+  ACCEPTABLE_THRESHOLD : float
+  CSV_SOURCE : str
+  conn
+  last_renew_dt : datetime
+  st : SentenceTransformer
+  get_as_list() -> typing.Iterable[QuestionAnswer]
+  get_by_id(id: int) -> typing.Optional[QuestionAnswer]
+  get_by_short_question(short_question: str) -> typing.Optional[QuestionAnswer]
+  renew_data()
+  suggest(user_question: str)
+}
+
+class "QuestionAnswer" as QABot.question_answers.QuestionAnswer {
+  answer
+  encoding : ndarray
+  file_answer : Optional[typing.Optional[str]]
+  id : str
+  question : str
+  short_question
+}
+class "QuestionAnswer" as QABot.admin_bot.xlsx_util.QuestionAnswer {
+  answer_file_path : typing.Optional[str]
+  id : typing.Optional[str]
+  question : str
+  text_answer : typing.Optional[str]
+}
+
+@enduml

@@ -1,0 +1,59 @@
+version: '3'
+services:
+  qa_bot:
+    container_name: user-qa-bot
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./qa_bot/Dockerfile
+    entrypoint: python -O ./qa_bot/main.py
+    ports:
+      - '2298:2298'
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    networks:
+      qa_backend:
+        ipv4_address: 172.20.57.3
+    volumes:
+      - ./files:/app/bot/files
+  admin_bot:
+    container_name: admin-bot
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./admin_bot/Dockerfile
+    entrypoint: python -O ./admin_bot/main.py
+    ports:
+      - '2299:2299'
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    networks:
+      qa_backend:
+        ipv4_address: 172.20.57.2
+    volumes:
+      - ./files:/app/bot/files
+  postgres:
+    image: postgres:14.8-alpine3.18
+    environment:
+      POSTGRES_DB: "qa"
+      POSTGRES_USER: "qa"
+      POSTGRES_PASSWORD: "k9430J84hGe5"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./storage/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./storage/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      qa_backend:
+        ipv4_address: 172.20.57.4
+networks:
+  qa_backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.57.0/24
